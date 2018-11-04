@@ -63,7 +63,7 @@ class ItemCard extends Component {
 
   render() {
     const { item, missing } = this.props
-    const { isModalOpen } = this.state
+    const { isModalOpen, inputDate } = this.state
     if (isModalOpen) {
       return (
         <View style={{ marginTop: 112 }}>

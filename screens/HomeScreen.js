@@ -24,12 +24,22 @@ const HomeScreen = ({data: { items, loading, error }}) => {
     <View style={styles.container}>
       <Header />
       <ScrollView style={styles.scrollViewContainer} contentContainerStyle={styles.contentContainer}>
-        <View style={styles.getStartedContainer}>
-          {hasMissingItems && <Text style={styles.titleText}>Lista de ações</Text>}
+        <View style={{
+            flex: 1,
+            width: '100%',
+            flexDirection: 'row',
+            alignItems: 'center',
+            padding: 20,
+            backgroundColor: '#fff',
+            borderTopWidth: 1,
+            borderBottomWidth: 1,
+            borderColor: '#f2f2f2',
+          }}>
           {
             hasMissingItems
             ? itemsMissing.map((item, index) => <ItemCard key={`card-item--${index}`} item={item} missing />)
-            : <Text>No removed items, everything is fine :)</Text>
+            : <Text style={{ fontSize: 14, textAlign: 'center', verticalAlign:'middle', fontWeight:'bold' }}>Você não possui
+            nenhuma pendência!</Text>
           }
         </View>
       </ScrollView>

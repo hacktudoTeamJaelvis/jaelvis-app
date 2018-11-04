@@ -9,7 +9,7 @@ const LoadingView = ({ loading, error }) => {
   if (loading && !error){
     return (
       <View style={styles.container}>
-        <Text style={styles.loadingText}>Carregani...</Text>
+        <Text style={styles.loadingText}>Buscando dados na lua...</Text>
       </View>
     )
   }
