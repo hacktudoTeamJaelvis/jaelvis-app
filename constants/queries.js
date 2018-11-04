@@ -1,25 +1,28 @@
 import gql from "graphql-tag";
 
-export const completeItemQuery = gql`
-  mutation($id: String!, $description: String!, $good_until: String!) {
+export const updateItemQuery = gql`
+  mutation($id: String!, $shelfId: bigint!, $set: items_set_input!) {
     update_items(where: {
       id: {
         _eq: $id
+      },
+      shelf_id: {
+        _eq: $shelfId
       }
-    }, _set: {
-      description: $description,
-      good_until: $good_until
-    }) {
+    }, _set: $set) {
       affected_rows
     }
   }
 `
 
 export const removeItemQuery = gql`
-  mutation($id: String!) {
+  mutation($id: String!, $shelfId: bigint!) {
     delete_items(where: {
       id: {
         _eq: $id
+      },
+      shelf_id: {
+        _eq: $shelfId
       }
     }) {
       affected_rows
