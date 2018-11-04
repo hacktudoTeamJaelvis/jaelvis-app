@@ -1,6 +1,7 @@
-const tintColor = '#2f95dc';
+const tintColor = '#57dbbc';
 
 export default {
+  removidoBadgeBg: '#ff4c4c',
   tintColor,
   tabIconDefault: '#ccc',
   tabIconSelected: tintColor,

@@ -5,12 +5,11 @@ import { Subscription } from 'react-apollo';
 const query = gql`
 subscription {
   items {
-    item_id
-    occurrence
+    id
     description
     missing_since
     good_until
-    image
+    image_url
   }
 }
 `
