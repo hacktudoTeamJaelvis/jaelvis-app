@@ -10,6 +10,7 @@ subscription {
     description
     missing_since
     good_until
+    image
   }
 }
 `

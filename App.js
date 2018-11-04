@@ -6,12 +6,10 @@ import AppNavigator from './navigation/AppNavigator';
 import { ApolloClient } from 'apollo-client';
 import { ApolloProvider } from 'react-apollo';
 import { WebSocketLink } from 'apollo-link-ws';
-import { HttpLink } from 'apollo-link-http';
-import {split, ApolloLink} from 'apollo-link';
+import { ApolloLink } from 'apollo-link';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
 const wsUri = 'wss://jaelvis-gql.herokuapp.com/v1alpha1/graphql'
-const httpUri = 'https://jaelvis-gql.herokuapp.com/v1alpha1/graphql'
 
 export default class App extends React.Component {
   constructor(props) {
@@ -21,10 +19,6 @@ export default class App extends React.Component {
       isLoadingComplete: false,
     }
 
-    const httpLink = new HttpLink({
-      uri: httpUri
-    });
-
     // Create a WebSocket link:
     const wsLink = new WebSocketLink({
       uri: wsUri,
@@ -32,17 +26,6 @@ export default class App extends React.Component {
         reconnect: true
       }
     });
-
-    const link = split(
-      // split based on operation type
-      ({ query }) => {
-        const { kind, operation } = getMainDefinition(query);
-        return kind === 'OperationDefinition' && operation === 'subscription';
-      },
-      wsLink,
-      httpLink,
-    );
-
     this.client = new ApolloClient({
       link: ApolloLink.from([
         wsLink
