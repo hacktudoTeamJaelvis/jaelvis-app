@@ -11,7 +11,7 @@ import {
 import Moment from 'moment';
 
 import { MonoText } from '../components/StyledText';
-import { graphql } from 'react-apollo';
+import { graphql, Subscription } from 'react-apollo';
 import gql from 'graphql-tag';
 
 class HomeScreen extends React.Component {
@@ -182,15 +182,25 @@ const styles = StyleSheet.create({
   },
 });
 
-
-export default graphql(gql`
-  {
-    items {
-      item_id
-      occurrence
-      description
-      missing_since
-      good_until
-    }
+const query = gql`
+subscription {
+  items {
+    item_id
+    occurrence
+    description
+    missing_since
+    good_until
   }
-`)(HomeScreen);
+}
+`
+
+export default () => (
+  <Subscription subscription={query}>
+    {
+      ({ data, loading, error, ...props }) => {
+        const {items} = data || {}
+        return <HomeScreen {...props} data={{items, loading, error}}/>;
+      }
+    }
+  </Subscription>
+)
