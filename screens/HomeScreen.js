@@ -14,8 +14,8 @@ import withItems from '../providers/withItems';
 import MOCK from '../constants/Mock';
 
 const HomeScreen = ({data: { items, loading, error }}) => {
-  items = MOCK
-  // if (loading || error) return <LoadingView loading={loading} error={error} />
+  // items = MOCK
+  if (loading || error) return <LoadingView loading={loading} error={error} />
 
   const itemsMissing = items.filter(({missing_since}) => !!missing_since)
   const hasMissingItems = itemsMissing.length !== 0

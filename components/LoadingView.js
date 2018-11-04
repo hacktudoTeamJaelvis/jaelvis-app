@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
   },
   erroText: {
     fontSize: 15,
-    color: '#eee',
+    color: '#e33',
     lineHeight: 24,
     textAlign: 'center',
     marginTop: 15,

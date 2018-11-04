@@ -14,7 +14,10 @@ export default ItemCard = ({ item, missing }) => {
   if (missing) {
     return (
       <View style={styles.normalContainer}>
-        <Text style={{}}>Retirado {Moment(item.missing_since).format('DD MMM')}</Text>
+        <View style={{ marginLeft: 20, width: 170 }}>
+          <Text style={{ fontWeight: 'bold' }}>Retirado</Text>
+          <Text style={{}}>{`${Moment(item.missing_since).format('mm')} min atrás`}</Text>
+        </View>
         {/* <Image style={styles.images} source={{ uri: item.image_url || 'https://via.placeholder.com/50' }} /> */}
         {/* <Badge
           title={item.missing_since ? 'retirado' : 'guardado'}

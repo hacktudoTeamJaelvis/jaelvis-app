@@ -1,12 +1,12 @@
 import React from "react";
 import { Subscription } from 'react-apollo';
-import { subscribeItemQuery } from '../constants/queries';
+import { subscribeItemsQuery } from '../constants/queries';
 
 const shelfId = 1
 
 export default (InsideComponent) => {
   const component = () => (
-    <Subscription subscription={subscribeItemQuery} variables={{shelfId}}>
+    <Subscription subscription={subscribeItemsQuery} variables={{shelf_id: shelfId}}>
       {
         ({ data, loading, error, ...props }) => {
           const {items} = data || {}
