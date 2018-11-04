@@ -1,22 +1,12 @@
 import React from "react";
-import gql from "graphql-tag";
 import { Subscription } from 'react-apollo';
+import { subscribeItemQuery } from '../constants/queries';
 
-const query = gql`
-subscription {
-  items {
-    id
-    description
-    missing_since
-    good_until
-    image_url
-  }
-}
-`
+const shelfId = 1
 
 export default (InsideComponent) => {
   const component = () => (
-    <Subscription subscription={query}>
+    <Subscription subscription={subscribeItemQuery} variables={{shelfId}}>
       {
         ({ data, loading, error, ...props }) => {
           const {items} = data || {}
