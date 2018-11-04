@@ -6,6 +6,7 @@ import {
   View,
   Image,
 } from 'react-native';
+import Moment from 'moment';
 
 import ItemCard from '../components/ItemCard';
 import Header from '../components/Header';
@@ -17,7 +18,16 @@ const HomeScreen = ({data: { items, loading, error }}) => {
   // items = MOCK
   if (loading || error) return <LoadingView loading={loading} error={error} />
 
-  const itemsMissing = items.filter(({missing_since}) => !!missing_since)
+  const isMissing = (item) => !!item.missing_since
+  const isExpiringSoon = ({good_until}) => {
+    if(!good_until) return false
+
+    const now = Moment()
+    return Moment(good_until).diff(now, 'days') < 2
+  }
+  const isPending = (item) => isMissing(item) || isExpiringSoon(item)
+
+  const itemsMissing = items.filter(isPending)
   const hasMissingItems = itemsMissing.length !== 0
 
   return (
@@ -27,7 +37,7 @@ const HomeScreen = ({data: { items, loading, error }}) => {
         <View style={{
             flex: 1,
             width: '100%',
-            flexDirection: 'row',
+            flexDirection: 'column',
             alignItems: 'center',
             padding: 20,
             backgroundColor: '#fff',
@@ -37,8 +47,13 @@ const HomeScreen = ({data: { items, loading, error }}) => {
           }}>
           {
             hasMissingItems
-            ? itemsMissing.map((item, index) => <ItemCard key={`card-item--${index}`} item={item} missing />)
-            : <Text style={{ fontSize: 14, textAlign: 'center', fontWeight:'bold' }}>Você não possui
+            ? itemsMissing.map((item, index) => (
+            <ItemCard
+            key={`card-item--${index}`}
+            item={item}
+            missing={isMissing(item)}
+            expiring={isExpiringSoon(item)} />
+            )) : <Text style={{ fontSize: 14, textAlign: 'center', fontWeight:'bold' }}>Você não possui
             nenhuma pendência!</Text>
           }
         </View>

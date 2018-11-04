@@ -16,7 +16,7 @@ const LinksScreen = ({ data: { items, loading, error } }) => {
     <View style={styles.container}>
       <Header />
       <ScrollView style={styles.scrollViewContainer}>
-        {items.map((item, index) => <ItemCard key={`card-item--${index}`} item={item} />)}
+        {itemsMissing.map((item, index) => <ItemCard key={`card-item--${index}`} item={item} />)}
       </ScrollView>
     </View>
   );

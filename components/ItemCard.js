@@ -34,6 +34,17 @@ class ItemCard extends Component {
     this.setState({ isModalOpen: !this.state.isModalOpen })
   }
 
+  handleDonation = () => {
+    const shelfId = 1
+    const id = this.props.item.id
+    const set = {
+      for_donation: true
+    }
+    const variables = { shelfId, id, set }
+
+    this.props.updateItem({ variables })
+  }
+
   handleSubmit = () => {
     const { inputName, inputDate } = this.state
     const shelfId = 1
@@ -44,7 +55,11 @@ class ItemCard extends Component {
     }
     const variables = { shelfId, id, set }
 
-    this.toggleModal()
+    this.setState({
+      isModalOpen: false,
+      inputName: '',
+      inputDate: null,
+    })
     this.props.updateItem({ variables })
     //Alert.alert(`PRODUTO NOME: ${inputName} and date: ${inputDate} CADASTRADO!`);
   }
@@ -70,7 +85,7 @@ class ItemCard extends Component {
   }
 
   render() {
-    const { item, missing } = this.props
+    const { item, missing, expiring } = this.props
     const { isModalOpen, inputDate } = this.state
     if (isModalOpen) {
       return (
@@ -121,14 +136,14 @@ class ItemCard extends Component {
                     <TouchableWithoutFeedback
                       onPress={this.pickDate}
                       style={{
-                        height: 20,
+                        height: 30,
                         width: 100,
                         justifyContent: 'center',
                         marginBottom: 25,
                       }}
                     >
                       <Text style={{
-                        height: 20,
+                        height: 30,
                         width: 100,
                         fontSize: 17,
                         fontWeight: 'bold',
@@ -228,6 +243,31 @@ class ItemCard extends Component {
         </View>
       )
     }
+    if (expiring) {
+      return (
+        <View style={styles.normalContainer}>
+          <Text style={{ fontWeight: 'bold', marginTop: 20 }}>Estragando</Text>
+          {/* <Image style={styles.images} source={{ uri: item.image_url || 'https://via.placeholder.com/50' }} /> */}
+          {/* <Badge
+            title={item.missing_since ? 'retirado' : 'guardado'}
+            color={item.missing_since ? '#59AEFD' : '#FF6B62'} /> */}
+          <Text style={{ fontSize: 30, fontWeight: 'bold' }}>{item.id}</Text>
+          <View style={{ marginLeft: 10, width: 80 }}>
+            <Text style={{ fontWeight: 'bold' }}>{item.description}</Text>
+            <Text style={{}}>Valido até {Moment(item.good_until).format('DD MMM')}</Text>
+          </View>
+          {
+            item.for_donation
+            ? <Text style={{ fontWeight: 'bold', marginTop: 20 }}>Doado</Text>
+            : <TouchableWithoutFeedback
+              style={{ height: 20, width: 20, zIndex: 999 }}
+              onPress={this.handleDonation}>
+              <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: -20, marginTop: 15 }}>Doar</Text>
+            </TouchableWithoutFeedback>
+          }
+        </View>
+      )
+    }
     const isNewItem = !item.description
     if (isNewItem) {
       return (
@@ -278,9 +318,9 @@ class ItemCard extends Component {
   }
 }
 
-export default ({ item, missing }) => <Mutation mutation={updateItemQuery}>
+export default ({ item, missing, expiring }) => <Mutation mutation={updateItemQuery}>
   {(updateItem) => <Mutation mutation={removeItemQuery}>
-    {(removeItem) => <ItemCard item={item} missing={missing} updateItem={updateItem} removeItem={removeItem} />}
+    {(removeItem) => <ItemCard expiring={expiring} item={item} missing={missing} updateItem={updateItem} removeItem={removeItem} />}
   </Mutation>}
 </Mutation>
 
