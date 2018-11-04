@@ -25,7 +25,7 @@ const HomeScreen = ({data: { items, loading, error }}) => {
       <Header />
       <ScrollView style={styles.scrollViewContainer} contentContainerStyle={styles.contentContainer}>
         <View style={styles.getStartedContainer}>
-          {hasMissingItems && <Text style={styles.titleText}>{`${itemsMissing.length} items retirados da geladeira`}</Text>}
+          {hasMissingItems && <Text style={styles.titleText}>Lista de ações</Text>}
           {
             hasMissingItems
             ? itemsMissing.map((item, index) => <ItemCard key={`card-item--${index}`} item={item} missing />)

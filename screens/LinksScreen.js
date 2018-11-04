@@ -7,7 +7,7 @@ import ItemCard from '../components/ItemCard';
 import MOCK from '../constants/Mock';
 
 const LinksScreen = ({ data: { items, loading, error } }) => {
-  // items = MOCK
+  //items = MOCK
   if (loading || error) return <LoadingView loading={loading} error={error} />
 
   return (
