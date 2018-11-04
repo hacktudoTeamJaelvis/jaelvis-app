@@ -26,7 +26,7 @@ const HomeScreen = ({data: { items, loading, error }}) => {
           {
             items.map((items, index) => {
               if (!items.description) return null
-              const formatedValidationDate = Moment(new Date(items.good_until)).format('DD MMM')
+              const formatedValidationDate = Moment(items.good_until).format('DD MMM')
               return <View
                 key={`list-item--${index}`}
                 style={{
