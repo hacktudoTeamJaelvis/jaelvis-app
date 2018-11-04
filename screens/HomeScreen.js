@@ -8,6 +8,8 @@ import {
   View,
 } from 'react-native';
 
+import Moment from 'moment';
+
 import { MonoText } from '../components/StyledText';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
@@ -19,10 +21,14 @@ class HomeScreen extends React.Component {
 
   render() {
     const { items, loading, error } = this.props.data
-    console.log('AQUI ó:', typeof items)
 
     const hasData = !loading && !error && items
-    const message = hasData ? JSON.stringify(items) : "LOADING OR ERROR"
+    let itemsNotregistered = 0
+    if (items) items.forEach(item => {
+      if (!item.description || item.description === '') {
+        itemsNotregistered = itemsNotregistered + 1
+      }
+    })
 
     if (loading) return <View style={styles.container}>{this.renderLoadingView()}</View>
     if (error) return <View style={styles.container}>{this.renderLoadingView()}</View>
@@ -31,7 +37,30 @@ class HomeScreen extends React.Component {
       <View style={styles.container}>
         <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
           <View style={styles.getStartedContainer}>
-            <Text style={styles.getStartedText}>Olha os items {message}</Text>
+            <Text style={styles.getStartedText}>Items cadastrados</Text>
+            {
+              items.map((items, index) => {
+                if (!items.description) return null
+                const formatedValidationDate = Moment(new Date(items.good_until)).format('DD MMM')
+                return <View
+                  key={`list-item--${index}`}
+                  style={{
+                    flex: 1,
+                    width: '100%',
+                    marginLeft: 5,
+                    marginRight: 5,
+                    marginTop: 7,
+                    padding: 20,
+                    backgroundColor: '#fff',
+                    borderRadius: 4,
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                  }}>
+                  <Text style={styles.getStartedText}>{items.description}</Text>
+                  <Text style={styles.getStartedText}>Valido até {formatedValidationDate}</Text>
+                </View>
+              })
+            }
           </View>
         </ScrollView>
 
@@ -43,7 +72,9 @@ class HomeScreen extends React.Component {
             </Text>
 
             <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-              <MonoText style={styles.codeHighlightText}>navigation/MainTabNavigator.js</MonoText>
+              <MonoText style={styles.codeHighlightText}>
+                {itemsNotregistered === 0 ? null : `${itemsNotregistered} items não cadastrados`}
+              </MonoText>
             </View>
           </View>
         }
