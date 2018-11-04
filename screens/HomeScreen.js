@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Image,
   Platform,
   ScrollView,
   StyleSheet,
@@ -11,123 +10,77 @@ import {
 import Moment from 'moment';
 
 import { MonoText } from '../components/StyledText';
-import { graphql, Subscription } from 'react-apollo';
-import gql from 'graphql-tag';
+import LoadingView from '../components/LoadingView';
+import withItems from "../providers/withItems";
 
-class HomeScreen extends React.Component {
-  static navigationOptions = {
-    header: null,
-  };
+const HomeScreen = ({data: { items, loading, error }}) => {
+  if (loading || error) return <LoadingView/>
 
-  render() {
-    const { items, loading, error } = this.props.data
+  const itemsNotRegistered = items.filter(({description}) => !description).length
 
-    const hasData = !loading && !error && items
-    let itemsNotregistered = 0
-    if (items) items.forEach(item => {
-      if (!item.description || item.description === '') {
-        itemsNotregistered = itemsNotregistered + 1
-      }
-    })
-
-    if (loading) return <View style={styles.container}>{this.renderLoadingView()}</View>
-    if (error) return <View style={styles.container}>{this.renderLoadingView()}</View>
-
-    return (
-      <View style={styles.container}>
-        <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-          <View style={styles.getStartedContainer}>
-            <Text style={styles.getStartedText}>Items cadastrados</Text>
-            {
-              items.map((items, index) => {
-                if (!items.description) return null
-                const formatedValidationDate = Moment(new Date(items.good_until)).format('DD MMM')
-                return <View
-                  key={`list-item--${index}`}
-                  style={{
-                    flex: 1,
-                    width: '100%',
-                    marginLeft: 5,
-                    marginRight: 5,
-                    marginTop: 7,
-                    padding: 20,
-                    backgroundColor: '#fff',
-                    borderRadius: 4,
-                    borderWidth: 1,
-                    borderColor: '#ccc',
-                  }}>
-                  <Text style={styles.getStartedText}>{items.description}</Text>
-                  <Text style={styles.getStartedText}>Valido até {formatedValidationDate}</Text>
-                </View>
-              })
-            }
-          </View>
-        </ScrollView>
-
-        {hasData && items && items.length && items.length === 0
-          ? null
-          : <View style={styles.tabBarInfoContainer}>
-            <Text style={styles.tabBarInfoText}>
-              {`Você possui ${items.length} item${items.length === 1 ? '' : 's'} detectados`}
-            </Text>
-
-            <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
-              <MonoText style={styles.codeHighlightText}>
-                {itemsNotregistered === 0 ?
-                  null
-                  : `${itemsNotregistered} item${itemsNotregistered === 1 ? '' : 's'} não cadastrados`}
-              </MonoText>
-            </View>
-          </View>
-        }
-      </View>
-    );
-  }
-
-  renderLoadingView() {
-    return (
+  return (
+    <View style={styles.container}>
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         <View style={styles.getStartedContainer}>
-          <Text style={styles.getStartedText}>Carregani...</Text>
+          <Text style={styles.getStartedText}>Items cadastrados</Text>
+          {
+            items.map((items, index) => {
+              if (!items.description) return null
+              const formatedValidationDate = Moment(new Date(items.good_until)).format('DD MMM')
+              return <View
+                key={`list-item--${index}`}
+                style={{
+                  flex: 1,
+                  width: '100%',
+                  marginLeft: 5,
+                  marginRight: 5,
+                  marginTop: 7,
+                  padding: 20,
+                  backgroundColor: '#fff',
+                  borderRadius: 4,
+                  borderWidth: 1,
+                  borderColor: '#ccc',
+                }}>
+                <Text style={styles.getStartedText}>{items.description}</Text>
+                <Text style={styles.getStartedText}>Valido até {formatedValidationDate}</Text>
+              </View>
+            })
+          }
         </View>
       </ScrollView>
-    )
-  }
+
+      <View style={styles.tabBarInfoContainer}>
+        <Text style={styles.tabBarInfoText}>
+          {`Você possui ${items.length} item${items.length === 1 ? '' : 's'} detectados`}
+        </Text>
+
+        <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
+          <MonoText style={styles.codeHighlightText}>
+            {itemsNotRegistered === 0 ?
+              null
+              : `${itemsNotRegistered} item${itemsNotRegistered === 1 ? '' : 's'} não cadastrados`}
+          </MonoText>
+        </View>
+      </View>
+    </View>
+  );
 }
+
+HomeScreen.navigationOptions = {
+  header: null,
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
   },
-  developmentModeText: {
-    marginBottom: 20,
-    color: 'rgba(0,0,0,0.4)',
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: 'center',
-  },
   contentContainer: {
     paddingTop: 30,
-  },
-  welcomeContainer: {
-    alignItems: 'center',
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  welcomeImage: {
-    width: 100,
-    height: 80,
-    resizeMode: 'contain',
-    marginTop: 3,
-    marginLeft: -10,
   },
   getStartedContainer: {
     alignItems: 'center',
     marginHorizontal: 50,
-  },
-  homeScreenFilename: {
-    marginVertical: 7,
   },
   codeHighlightText: {
     color: 'rgba(96,100,109, 0.8)',
@@ -171,38 +124,6 @@ const styles = StyleSheet.create({
   navigationFilename: {
     marginTop: 5,
   },
-  helpContainer: {
-    marginTop: 15,
-    alignItems: 'center',
-  },
-  helpLink: {
-    paddingVertical: 15,
-  },
-  helpLinkText: {
-    fontSize: 14,
-    color: '#2e78b7',
-  },
 });
 
-const query = gql`
-subscription {
-  items {
-    item_id
-    occurrence
-    description
-    missing_since
-    good_until
-  }
-}
-`
-
-export default () => (
-  <Subscription subscription={query}>
-    {
-      ({ data, loading, error, ...props }) => {
-        const {items} = data || {}
-        return <HomeScreen {...props} data={{items, loading, error}}/>;
-      }
-    }
-  </Subscription>
-)
+export default withItems(HomeScreen);
