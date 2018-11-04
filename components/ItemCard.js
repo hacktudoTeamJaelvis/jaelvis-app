@@ -53,7 +53,7 @@ class ItemCard extends Component {
         date: new Date()
       });
       if (action !== DatePickerAndroid.dismissedAction) {
-        const date = Moment().year(year).month(month).day(day).format('YYYY-MM-DD')
+        const date = Moment().year(year).month(month).date(day).format('YYYY-MM-DD')
         this.setState({ inputDate: date })
       }
     } catch ({code, message}) {
@@ -110,35 +110,67 @@ class ItemCard extends Component {
                       value={this.state.inputName}
                     />
                   </View>
-                <TouchableWithoutFeedback
-                  onPress={this.pickDate}
-                  style={{
-                    height: 100,
-                    width: 250,
-                    justifyContent: 'center',
-                    marginBottom: 25,
-                  }}
-                >
-                  <Text style={{
-                    height: 50,
-                    width: 250,
-                    fontSize: 17,
-                    fontWeight: 'bold',
-                    color: '#57dbbc',
-                    padding: 5,
-                    borderRadius: 30,
-                    borderWidth: 2,
-                    borderColor: '#57dbbc',
-                    textAlign: 'center',
-                    justifyContent: 'center',
-                    paddingTop: 10,
-                  }}>
-                    Preencher de Validade
-                  </Text>
-                </TouchableWithoutFeedback>
+                {inputDate
+                  ? <View>
+                      <Text style={{}}>Valido até {Moment(inputDate).format('DD MMM')}</Text>
+                      <TouchableWithoutFeedback
+                      onPress={this.pickDate}
+                      style={{
+                        height: 70,
+                        width: 100,
+                        justifyContent: 'center',
+                        marginBottom: 25,
+                      }}
+                    >
+                      <Text style={{
+                        height: 70,
+                        width: 100,
+                        fontSize: 17,
+                        fontWeight: 'bold',
+                        color: '#57dbbc',
+                        padding: 5,
+                        borderRadius: 30,
+                        borderWidth: 2,
+                        borderColor: '#57dbbc',
+                        textAlign: 'center',
+                        justifyContent: 'center',
+                        paddingTop: 10,
+                      }}>
+                        Editar
+                      </Text>
+                    </TouchableWithoutFeedback>
+                    </View>
+                  : <TouchableWithoutFeedback
+                      onPress={this.pickDate}
+                      style={{
+                        height: 100,
+                        width: 250,
+                        justifyContent: 'center',
+                        marginBottom: 25,
+                      }}
+                    >
+                      <Text style={{
+                        height: 50,
+                        width: 250,
+                        fontSize: 17,
+                        fontWeight: 'bold',
+                        color: '#57dbbc',
+                        padding: 5,
+                        borderRadius: 30,
+                        borderWidth: 2,
+                        borderColor: '#57dbbc',
+                        textAlign: 'center',
+                        justifyContent: 'center',
+                        paddingTop: 10,
+                      }}>
+                        Preencher de Validade
+                      </Text>
+                    </TouchableWithoutFeedback>
+                }
                 <TouchableWithoutFeedback
                   onPress={this.handleSubmit}
                   style={{
+                    marginTop: 25,
                     height: 100,
                     width: 250,
                     justifyContent: 'center',

@@ -10,6 +10,8 @@ const LinksScreen = ({ data: { items, loading, error } }) => {
   //items = MOCK
   if (loading || error) return <LoadingView loading={loading} error={error} />
 
+  const itemsMissing = items.filter(({missing_since}) => !!missing_since)
+
   return (
     <View style={styles.container}>
       <Header />
