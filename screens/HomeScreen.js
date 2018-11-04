@@ -38,7 +38,7 @@ const HomeScreen = ({data: { items, loading, error }}) => {
           {
             hasMissingItems
             ? itemsMissing.map((item, index) => <ItemCard key={`card-item--${index}`} item={item} missing />)
-            : <Text style={{ fontSize: 14, textAlign: 'center', verticalAlign:'middle', fontWeight:'bold' }}>Você não possui
+            : <Text style={{ fontSize: 14, textAlign: 'center', fontWeight:'bold' }}>Você não possui
             nenhuma pendência!</Text>
           }
         </View>

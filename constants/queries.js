@@ -38,6 +38,7 @@ export const subscribeItemsQuery = gql`
       missing_since
       good_until
       image_url
+      for_donation
     }
   }
 `

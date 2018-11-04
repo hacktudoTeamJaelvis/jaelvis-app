@@ -3,18 +3,20 @@ import {
   Alert,
   DatePickerAndroid,
   TouchableWithoutFeedback,
+  TouchableHighlight,
   Text,
   TextInput,
   View,
   StyleSheet,
+  ScrollView,
   Image,
   Modal,
 } from 'react-native';
 
 import Moment from 'moment';
-import {Mutation} from 'react-apollo';
+import { Mutation } from 'react-apollo';
 
-import {updateItemQuery} from '../constants/queries';
+import { updateItemQuery, removeItemQuery } from '../constants/queries';
 
 import ArrowBackIcon from './ArrowBackIcon';
 
@@ -40,25 +42,31 @@ class ItemCard extends Component {
       good_until: inputDate,
       description: inputName
     }
-    const variables = {shelfId, id, set}
+    const variables = { shelfId, id, set }
 
     this.toggleModal()
-    this.props.updateItem({variables})
+    this.props.updateItem({ variables })
     //Alert.alert(`PRODUTO NOME: ${inputName} and date: ${inputDate} CADASTRADO!`);
   }
 
   pickDate = async () => {
     try {
-      const {action, year, month, day} = await DatePickerAndroid.open({
+      const { action, year, month, day } = await DatePickerAndroid.open({
         date: new Date()
       });
       if (action !== DatePickerAndroid.dismissedAction) {
         const date = Moment().year(year).month(month).date(day).format('YYYY-MM-DD')
         this.setState({ inputDate: date })
       }
-    } catch ({code, message}) {
+    } catch ({ code, message }) {
       Alert.alert(`Cannot open date picker: ${message}`);
     }
+  }
+
+  removeItem = () => {
+    const shelfId = 1
+    const variables = {id: this.props.item.id, shelfId}
+    this.props.removeItem({variables})
   }
 
   render() {
@@ -70,26 +78,22 @@ class ItemCard extends Component {
           <Modal
             animationType="slide"
             transparent={false}
-            visible
-            onRequestClose={() => {
-              return true
+            visible={isModalOpen}
+            onRequestClose={() => Alert.alert('Cancelar cadastro?')}>
+            <ScrollView style={{
+              flex: 1,
+              flexDirection: 'column'
             }}>
-              <View style={{
-                flex: 1,
-                flexDirection: 'column',
-                alignItems: 'center',
-              }}>
-                <View style={{ position: 'absolute', left: 20, top: 20 }}>
-                <TouchableWithoutFeedback
-                  style={{ height: 17, width: 17 }}
-                  onPress={this.toggleModal}>
-                    <ArrowBackIcon />
-                  </TouchableWithoutFeedback>
-                </View>
-                <View>
-                  <Text style={styles.modalTitleText}>Cadastro do produto</Text>
-                  <Text style={styles.modalText}>Insira todas as informações referentes ao item.</Text>
-                </View>
+              <TouchableHighlight
+                style={{ height: 30, width: 30, position: 'absolute', left: 20, top: 20 }}
+                onPress={this.toggleModal}>
+                <ArrowBackIcon />
+              </TouchableHighlight>
+              <View>
+                <Text style={styles.modalTitleText}>Cadastro do produto</Text>
+                <Text style={styles.modalText}>Insira todas as informações referentes ao item.</Text>
+              </View>
+              <View style={{ alignItems: 'center' }}>
                 <Image
                   style={{
                     width: 200,
@@ -97,33 +101,34 @@ class ItemCard extends Component {
                     alignItems: 'center',
                   }}
                   source={{ uri: item.image_url || 'https://via.placeholder.com/50' }} />
-                  <View style={{ width: 250, marginTop: 30, marginBottom: 25 }}>
-                    <Text style={{ fontWeight: 'bold' }}>NOME DO PRODUTO</Text>
-                    <TextInput
-                      style={{
-                        height: 40,
-                        width: 250,
-                        borderBottomColor: 'gray',
-                        borderBottomWidth: 1
-                      }}
-                      onChangeText={(text) => this.setState({ inputName: text })}
-                      value={this.state.inputName}
-                    />
-                  </View>
+
+                <View style={{ width: 250, marginTop: 30, marginBottom: 25 }}>
+                  <Text style={{ fontWeight: 'bold' }}>NOME DO PRODUTO</Text>
+                  <TextInput
+                    style={{
+                      height: 40,
+                      width: 250,
+                      borderBottomColor: 'gray',
+                      borderBottomWidth: 1
+                    }}
+                    onChangeText={(text) => this.setState({ inputName: text })}
+                    value={this.state.inputName}
+                  />
+                </View>
                 {inputDate
-                  ? <View>
-                      <Text style={{}}>Valido até {Moment(inputDate).format('DD MMM')}</Text>
-                      <TouchableWithoutFeedback
+                  ? <View style={{ flexDirection: 'row' }}>
+                    <Text style={{}}>Valido até {Moment(inputDate).format('DD MMM')}</Text>
+                    <TouchableWithoutFeedback
                       onPress={this.pickDate}
                       style={{
-                        height: 70,
+                        height: 20,
                         width: 100,
                         justifyContent: 'center',
                         marginBottom: 25,
                       }}
                     >
                       <Text style={{
-                        height: 70,
+                        height: 20,
                         width: 100,
                         fontSize: 17,
                         fontWeight: 'bold',
@@ -139,33 +144,33 @@ class ItemCard extends Component {
                         Editar
                       </Text>
                     </TouchableWithoutFeedback>
-                    </View>
+                  </View>
                   : <TouchableWithoutFeedback
-                      onPress={this.pickDate}
-                      style={{
-                        height: 100,
-                        width: 250,
-                        justifyContent: 'center',
-                        marginBottom: 25,
-                      }}
-                    >
-                      <Text style={{
-                        height: 50,
-                        width: 250,
-                        fontSize: 17,
-                        fontWeight: 'bold',
-                        color: '#57dbbc',
-                        padding: 5,
-                        borderRadius: 30,
-                        borderWidth: 2,
-                        borderColor: '#57dbbc',
-                        textAlign: 'center',
-                        justifyContent: 'center',
-                        paddingTop: 10,
-                      }}>
-                        Preencher de Validade
+                    onPress={this.pickDate}
+                    style={{
+                      height: 100,
+                      width: 250,
+                      justifyContent: 'center',
+                      marginBottom: 25,
+                    }}
+                  >
+                    <Text style={{
+                      height: 50,
+                      width: 250,
+                      fontSize: 17,
+                      fontWeight: 'bold',
+                      color: '#57dbbc',
+                      padding: 5,
+                      borderRadius: 30,
+                      borderWidth: 2,
+                      borderColor: '#57dbbc',
+                      textAlign: 'center',
+                      justifyContent: 'center',
+                      paddingTop: 10,
+                    }}>
+                      Preencher de Validade
                       </Text>
-                    </TouchableWithoutFeedback>
+                  </TouchableWithoutFeedback>
                 }
                 <TouchableWithoutFeedback
                   onPress={this.handleSubmit}
@@ -194,6 +199,7 @@ class ItemCard extends Component {
                   </Text>
                 </TouchableWithoutFeedback>
               </View>
+            </ScrollView>
           </Modal>
         </View>
       )
@@ -201,7 +207,7 @@ class ItemCard extends Component {
     if (missing) {
       return (
         <View style={styles.normalContainer}>
-          <View style={{ marginLeft: 20, width: 100 }}>
+          <View style={{ marginLeft: 0, width: 80 }}>
             <Text style={{ fontWeight: 'bold' }}>Retirado</Text>
             <Text style={{}}>{`${Moment(item.missing_since).format('mm')} min atrás`}</Text>
           </View>
@@ -210,10 +216,15 @@ class ItemCard extends Component {
             title={item.missing_since ? 'retirado' : 'guardado'}
             color={item.missing_since ? '#59AEFD' : '#FF6B62'} /> */}
           <Text style={{ fontSize: 30, fontWeight: 'bold' }}>{item.id}</Text>
-          <View style={{ marginLeft: 20, width: 170 }}>
+          <View style={{ marginLeft: 10, width: 80 }}>
             <Text style={{ fontWeight: 'bold' }}>{item.description}</Text>
             <Text style={{}}>Valido até {Moment(item.good_until).format('DD MMM')}</Text>
           </View>
+          <TouchableWithoutFeedback
+            style={{ height: 20, width: 20, zIndex: 999 }}
+            onPress={this.removeItem}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: -20, marginTop: 15 }}>X</Text>
+          </TouchableWithoutFeedback>
         </View>
       )
     }
@@ -221,33 +232,33 @@ class ItemCard extends Component {
     if (isNewItem) {
       return (
         <View style={styles.newItemContainer}>
-            <Image style={styles.images} source={{ uri: item.image_url || 'https://via.placeholder.com/50' }} />
-            {/* <Badge title="Novo" bgColor='#57dbbc' /> */}
-            <Text style={{ fontSize: 30 }}>{item.id}</Text>
-            <TouchableWithoutFeedback
-              onPress={this.toggleModal}
-              style={{
-                height: 40,
-                width: 170,
-                justifyContent: 'center'
-              }}
-            >
-              <Text style={{
-                height: 40,
-                width: 170,
-                fontSize: 15,
-                paddingTop: 10,
-                color: '#57dbbc',
-                padding: 5,
-                borderRadius: 30,
-                borderWidth: 2,
-                borderColor: '#57dbbc',
-                fontWeight: 'bold',
-                textAlign: 'center',
-              }}>
-                CADASTRAR
+          <Image style={styles.images} source={{ uri: item.image_url || 'https://via.placeholder.com/50' }} />
+          {/* <Badge title="Novo" bgColor='#57dbbc' /> */}
+          <Text style={{ fontSize: 30 }}>{item.id}</Text>
+          <TouchableWithoutFeedback
+            onPress={this.toggleModal}
+            style={{
+              height: 40,
+              width: 170,
+              justifyContent: 'center'
+            }}
+          >
+            <Text style={{
+              height: 40,
+              width: 170,
+              fontSize: 15,
+              paddingTop: 10,
+              color: '#57dbbc',
+              padding: 5,
+              borderRadius: 30,
+              borderWidth: 2,
+              borderColor: '#57dbbc',
+              fontWeight: 'bold',
+              textAlign: 'center',
+            }}>
+              CADASTRAR
               </Text>
-            </TouchableWithoutFeedback>
+          </TouchableWithoutFeedback>
         </View>
       )
     }
@@ -267,8 +278,10 @@ class ItemCard extends Component {
   }
 }
 
-export default ({item, missing}) => <Mutation mutation={updateItemQuery}>
-{(updateItem, {data}) => <ItemCard item={item} missing={missing} updateItem={updateItem}/>}
+export default ({ item, missing }) => <Mutation mutation={updateItemQuery}>
+  {(updateItem) => <Mutation mutation={removeItemQuery}>
+    {(removeItem) => <ItemCard item={item} missing={missing} updateItem={updateItem} removeItem={removeItem} />}
+  </Mutation>}
 </Mutation>
 
 const styles = StyleSheet.create({
