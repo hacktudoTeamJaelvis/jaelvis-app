@@ -10,24 +10,26 @@ import {
 import ItemCard from '../components/ItemCard';
 import Header from '../components/Header';
 import LoadingView from '../components/LoadingView';
-import withItems from "../providers/withItems";
+import withItems from '../providers/withItems';
+import MOCK from '../constants/Mock';
 
 const HomeScreen = ({data: { items, loading, error }}) => {
-  if (loading || error) return <LoadingView loading={loading} error={error} />
+  items = MOCK
+  // if (loading || error) return <LoadingView loading={loading} error={error} />
 
-  const itemsNotRegistered = items.filter(({description}) => !description)
-  const hasUnregisteredItems = itemsNotRegistered.length !== 0
+  const itemsMissing = items.filter(({missing_since}) => !!missing_since)
+  const hasMissingItems = itemsMissing.length !== 0
 
   return (
     <View style={styles.container}>
       <Header />
       <ScrollView style={styles.scrollViewContainer} contentContainerStyle={styles.contentContainer}>
         <View style={styles.getStartedContainer}>
-          <Text style={styles.titleText}>Items detectados</Text>
+          {hasMissingItems && <Text style={styles.titleText}>{`${itemsMissing.length} items retirados da geladeira`}</Text>}
           {
-            hasUnregisteredItems
-            ? itemsNotRegistered.map((item, index) => <ItemCard key={`card-item--${index}`} item={item} />)
-            : <Text>has no unregistered items</Text>
+            hasMissingItems
+            ? itemsMissing.map((item, index) => <ItemCard key={`card-item--${index}`} item={item} missing />)
+            : <Text>No removed items, everything is fine :)</Text>
           }
         </View>
       </ScrollView>
