@@ -68,12 +68,14 @@ class HomeScreen extends React.Component {
           ? null
           : <View style={styles.tabBarInfoContainer}>
             <Text style={styles.tabBarInfoText}>
-              {`Você possui ${items.length} item${items.length === 1 ? '' : 's'} cadastrados`}
+              {`Você possui ${items.length} item${items.length === 1 ? '' : 's'} detectados`}
             </Text>
 
             <View style={[styles.codeHighlightContainer, styles.navigationFilename]}>
               <MonoText style={styles.codeHighlightText}>
-                {itemsNotregistered === 0 ? null : `${itemsNotregistered} items não cadastrados`}
+                {itemsNotregistered === 0 ?
+                  null
+                  : `${itemsNotregistered} item${itemsNotregistered === 1 ? '' : 's'} não cadastrados`}
               </MonoText>
             </View>
           </View>
@@ -86,7 +88,7 @@ class HomeScreen extends React.Component {
     return (
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         <View style={styles.getStartedContainer}>
-          <Text style={styles.getStartedText}>Coiso vazio</Text>
+          <Text style={styles.getStartedText}>Carregani...</Text>
         </View>
       </ScrollView>
     )
