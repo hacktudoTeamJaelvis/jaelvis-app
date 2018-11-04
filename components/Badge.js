@@ -6,14 +6,16 @@ import {
 
 export default Badge = ({ title = 'Retirado', bgColor = '#ff4c4c' }) => (
   <View style={{
-    height: 17,
-    backgroundColor: bgColor,
-    borderRadius: 999,
+    // height: 17,
+    // backgroundColor: bgColor,
+    // borderRadius: 999,
   }}>
     <Text style={{
-      color: '#fff',
+      color: bgColor,
+      fontSize: 20,
+      fontWeight: 'bold',
     }}>
-      {` ${title} `}
+      {title.toUpperCase()}
     </Text>
   </View>
 )

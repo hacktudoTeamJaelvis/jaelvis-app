@@ -8,12 +8,12 @@ export default Header = () => (
   <View style={{
     alignSelf: 'flex-start',
     width: '100%',
-    height: 70,
-    paddingTop: 30,
+    height: 90,
+    paddingTop: 35,
     paddingLeft: 15,
-    marginBottom: 20,
+    paddingBottom: 25,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: '#f2f2f2',
   }}>
     <HeaderIcon />
   </View>

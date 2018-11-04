@@ -15,7 +15,8 @@ export default class TabBarIcon extends React.Component {
       }}>
         <Text style={{
           color: this.props.focused ? Colors.tabIconSelected : Colors.tabIconDefault,
-        }}>{this.props.title}</Text>
+          fontWeight: 'bold',
+        }}>{this.props.title.toUpperCase()}</Text>
       </View>
     );
     // return (
